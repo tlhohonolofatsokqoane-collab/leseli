@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Leseli | Higher-Education Access in Lesotho</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css">
+</head>
+<body class="product-body">
+    <header class="product-header">
+        <a class="product-brand" href="index.html">Leseli</a>
+        <nav class="product-nav" aria-label="Primary navigation">
+            <a href="#institutions">Institutions</a>
+            <a href="#qualify">Qualify</a>
+            <a href="#aps">APS</a>
+            <a href="#prospectuses">Prospectuses</a>
+            <a href="#funding">Scholarships</a>
+            <a href="#community">Community</a>
+        </nav>
+        <button id="advisor-header-open" class="product-login" type="button">AI Advisor</button>
+    </header>
+
+    <main>
+        <section class="product-hero">
+            <div class="product-hero-inner">
+                <p class="product-kicker">For Basotho students planning life after Grade 11/LGCSE</p>
+                <h1>Choosing what to study after LGCSE shouldn't be guesswork.</h1>
+                <p class="product-lead">Leseli matches your results to real programmes, explains your options through AI, and connects you with scholarships — so you apply with clarity, not confusion.</p>
+                <div class="product-actions">
+                    <a class="product-btn product-btn-primary" href="#qualify">Check Programmes</a>
+                    <a class="product-btn product-btn-secondary" href="#institutions">Browse Institutions</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="scope-strip" aria-label="Platform scope">
+            <article>
+                <strong>10</strong>
+                <span>priority institutions</span>
+            </article>
+            <article>
+                <strong>NUL only</strong>
+                <span>confirmed summed APS use</span>
+            </article>
+            <article>
+                <strong>0</strong>
+                <span>bursaries listed by design</span>
+            </article>
+            <article>
+                <strong>Live</strong>
+                <span>session Q&amp;A prototype</span>
+            </article>
+        </section>
+
+        <section id="institutions" class="product-section">
+            <div class="section-heading">
+                <p class="product-kicker">Institution directory</p>
+                <h2>Top higher-education institutions in Lesotho</h2>
+                <p>Data is structured around CHE-accredited institutions and official institution pages where available.</p>
+            </div>
+            <div id="institution-grid" class="directory-grid"></div>
+        </section>
+
+        <section id="qualify" class="product-section qualify-layout">
+            <div class="section-heading">
+                <p class="product-kicker">What do I qualify for?</p>
+                <h2>Enter your LGCSE results and see eligible programmes</h2>
+                <p>Add your Grade 11 subjects and grades. Leseli checks them against the programmes in the catalogue and shows the institutions where you appear eligible.</p>
+            </div>
+            <div class="tool-grid">
+                <form id="qualification-form" class="tool-panel">
+                    <div class="panel-topline">
+                        <h3>Your Results</h3>
+                        <span>LGCSE</span>
+                    </div>
+                    <div id="result-subjects" class="subject-stack"></div>
+                    <button id="add-result-subject" class="product-btn product-btn-secondary" type="button">Add Subject</button>
+                    <label for="career-goal">Career interest</label>
+                    <input id="career-goal" type="text" placeholder="e.g. nursing, law, business, computers">
+                    <button class="product-btn product-btn-primary" type="submit">Show Eligible Programmes</button>
+                </form>
+                <div class="tool-panel">
+                    <div class="panel-topline">
+                        <h3>Eligible Programmes</h3>
+                        <span id="match-count">0 shown</span>
+                    </div>
+                    <div id="programme-results" class="stack-list"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="prospectuses" class="product-section">
+            <div class="section-heading">
+                <p class="product-kicker">Prospectuses</p>
+                <h2>Open institution prospectuses</h2>
+                <p>These files are included in the project folder and can be opened directly from the site.</p>
+            </div>
+            <div id="prospectus-list" class="prospectus-grid"></div>
+        </section>
+
+        <section id="aps" class="product-section aps-layout">
+            <div class="section-heading">
+                <p class="product-kicker">APS calculator</p>
+                <h2>Estimate a Cambridge-style LGCSE score for NUL</h2>
+                <p>This calculator uses A*=8 through G=1 as an illustrative guide. Confirm exact weighting with NUL Admissions or ECOL before making real decisions.</p>
+            </div>
+            <div class="tool-grid">
+                <form id="aps-form" class="tool-panel">
+                    <div id="aps-subjects" class="subject-stack"></div>
+                    <button id="add-aps-subject" class="product-btn product-btn-secondary" type="button">Add Subject</button>
+                    <button class="product-btn product-btn-primary" type="submit">Calculate APS</button>
+                </form>
+                <aside class="tool-panel result-panel">
+                    <h3>Your Institution Eligibility</h3>
+                    <p class="aps-score"><span id="aps-score">0</span> points</p>
+                    <div id="aps-eligibility" class="stack-list"></div>
+                </aside>
+            </div>
+        </section>
+
+        <section id="funding" class="product-section">
+            <div class="section-heading">
+                <p class="product-kicker">Funding and career exposure</p>
+                <h2>Scholarships, learnerships, and internships</h2>
+                <p>Government loan-bursary tracking through NMDS is intentionally out of scope. These listings focus on scholarships and honestly framed placement pathways.</p>
+            </div>
+            <div class="resource-grid">
+                <div class="resource-column">
+                    <h3>Scholarships</h3>
+                    <div id="scholarship-list" class="stack-list"></div>
+                </div>
+                <div class="resource-column">
+                    <h3>Learnerships &amp; Internships</h3>
+                    <div id="placement-list" class="stack-list"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="posts" class="product-section">
+            <div class="section-heading">
+                <p class="product-kicker">Posts</p>
+                <h2>Practical admission explainers</h2>
+            </div>
+            <div id="post-list" class="post-grid"></div>
+        </section>
+
+        <section id="community" class="product-section community-layout">
+            <div class="section-heading">
+                <p class="product-kicker">Community Q&amp;A</p>
+                <h2>Ask a question and see it added live</h2>
+                <p>Submissions are stored for this browser session only. A backend/database is still needed for permanent questions and notifications.</p>
+            </div>
+            <div class="tool-grid">
+                <form id="question-form" class="tool-panel">
+                    <label for="question-name">Name</label>
+                    <input id="question-name" type="text" placeholder="Your name">
+                    <label for="question-topic">Topic</label>
+                    <select id="question-topic">
+                        <option>Admissions</option>
+                        <option>APS</option>
+                        <option>Scholarships</option>
+                        <option>Institution requirements</option>
+                    </select>
+                    <label for="question-text">Question</label>
+                    <textarea id="question-text" rows="5" placeholder="What do you need help with?" required></textarea>
+                    <button class="product-btn product-btn-primary" type="submit">Post Question</button>
+                </form>
+                <div id="question-list" class="stack-list"></div>
+            </div>
+        </section>
+    </main>
+
+    <aside id="floating-advisor" class="floating-advisor" aria-label="AI Advisor">
+        <button id="advisor-toggle" class="advisor-launcher" type="button" aria-expanded="false" aria-controls="advisor-chat-panel">
+            <span class="advisor-icon">AI</span>
+            <span>AI Advisor</span>
+        </button>
+        <section id="advisor-chat-panel" class="advisor-chat-panel" aria-label="AI advisor chat">
+            <div class="advisor-chat-header">
+                <div>
+                    <p>UniScopels</p>
+                    <h2>AI Advisor</h2>
+                </div>
+                <button id="advisor-close" type="button" aria-label="Close AI advisor">x</button>
+            </div>
+            <div id="advisor-messages" class="advisor-messages" aria-live="polite">
+                <article class="advisor-message assistant">
+                    Hi. Enter your LGCSE results, then ask me about careers, course choices, or what subjects to improve.
+                </article>
+            </div>
+            <form id="advisor-form" class="advisor-compose">
+                <label class="sr-only" for="advisor-message">Ask the AI advisor</label>
+                <textarea id="advisor-message" rows="2" placeholder="Ask about careers, courses, or requirements"></textarea>
+                <button type="submit">Send</button>
+            </form>
+        </section>
+    </aside>
+
+    <footer class="product-footer">
+        <p>&copy; <span id="year"></span> Leseli. Higher-education access for students in Lesotho.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
