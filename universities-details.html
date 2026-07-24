@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>University Details | UniScopels</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='style.css'>
+</head>
+<body>
+    <header class='site-header'>
+        <a class='brand' href='index.html'>UniScopels</a>
+        <nav class='main-nav'>
+            <a href='index.html'>Home</a>
+            <a href='universities.html'>Universities</a>
+            <a href='universities-details.html'>University Details</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class='page-hero reveal'>
+            <p class='eyebrow'>University Details</p>
+            <h1 id='detail-title'>University Details</h1>
+            <p id='detail-lead' class='lead'>Select a university from the universities page to view details.</p>
+        </section>
+
+        <section class='benefits uni-detail' data-university='nul' hidden>
+            <div class='benefit-grid'>
+                <article class='card reveal'>
+                    <h3 id='summary-title-1'>Location</h3>
+                    <p id='summary-text-1'>-</p>
+                </article>
+
+                <article class='card reveal'>
+                    <h3 id='summary-title-2'>Faculties</h3>
+                    <p id='summary-text-2'>-</p>
+                </article>
+
+                <article class='card reveal'>
+                    <h3 id='summary-title-3'>Programmes</h3>
+                    <p id='summary-text-3'>-</p>
+                </article>
+            </div>
+        </section>
+
+        <section class='matcher reveal uni-detail' data-university='nul' hidden>
+            <div class='matcher-panel'>
+                <h2 id='info-heading'>University Information</h2>
+                <p id='info-text'>Select a faculty below to explore programme details and requirements.</p>
+            </div>
+        </section>
+
+        <section class='matcher reveal uni-detail' data-university='nul' hidden>
+            <div class='matcher-panel'>
+                <h2>Explore Programmes</h2>
+                <p>Select a faculty, then select a programme to view full details (requirements, entry routes, career paths, and related information from your NUL file).</p>
+                <h3>Step 1: Faculties</h3>
+                <div id='faculty-list' class='matcher-actions'></div>
+                <h3>Step 2: Programmes</h3>
+                <div id='programme-list' class='program-results'>
+                    <div class='no-match'>Choose a faculty to load programmes.</div>
+                </div>
+                <h3>Step 3: Programme Details</h3>
+                <div id='programme-details' class='program-results'>
+                    <div class='no-match'>Choose a programme to view details.</div>
+                </div>
+            </div>
+        </section>
+
+        <section class='matcher reveal uni-detail' data-university='generic' hidden>
+            <div class='matcher-panel'>
+                <h2 id='generic-heading'>Details Coming Soon</h2>
+                <p id='generic-copy'>Prospectus details for this university will be added here.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class='site-footer'>
+        <p>&copy; <span id='year'></span> UniScopels. Your path to university starts here.</p>
+    </footer>
+
+    <script src='script.js'></script>
+</body>
+</html>
