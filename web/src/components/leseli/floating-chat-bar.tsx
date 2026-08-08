@@ -161,8 +161,7 @@ function CompactChatInput({ onOpen }: { onOpen: () => void }) {
       <button
         type="button"
         disabled
-        className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#e6ded6] text-[#a99f96]"
-        aria-label="Send disabled"
+        className="flex size-10 shrink-0 items-center justify-center rounded-full  bg-[#f26a1b] p-0 text-white hover:bg-[#d9580f]"
       >
         <Send className="size-4" />
       </button>
