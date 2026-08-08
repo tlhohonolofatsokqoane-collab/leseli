@@ -246,6 +246,10 @@ function evaluateProgramme(programme: Programme, grades: Record<string, Grade>) 
   }
 }
 
+type ProgrammeMatch = Programme & {
+  evaluation: ReturnType<typeof evaluateProgramme>
+}
+
 function statusStyles(status: string) {
   if (status === "Likely") {
     return "bg-[#fff1dc] text-[#a14300]"
@@ -314,7 +318,7 @@ function GradeButton({
       type="button"
       onClick={onClick}
       className={cn(
-        "h-9 min-w-9 rounded-full px-3 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-orange-500/25",
+        "h-14 min-w-14 rounded-2xl px-4 text-lg font-semibold transition focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-orange-500/25",
         active
           ? "bg-[#f26a1b] text-white shadow-[0_8px_22px_rgba(242,106,27,0.25)]"
           : "bg-[#f4f4f1] text-[#6b625c] hover:bg-[#ffe7cf] hover:text-[#b24600]"
@@ -326,7 +330,11 @@ function GradeButton({
   )
 }
 
-function GradeMatcher() {
+function GradeMatcher({
+  onTopMatchChange,
+}: {
+  onTopMatchChange: (programme: ProgrammeMatch | null) => void
+}) {
   const [grades, setGrades] = useState(initialGrades)
   const [subjectIndex, setSubjectIndex] = useState(0)
   const [otherSubject, setOtherSubject] = useState("")
@@ -350,6 +358,10 @@ function GradeMatcher() {
       }))
       .sort((a, b) => b.evaluation.score - a.evaluation.score)
   }, [grades])
+
+  useEffect(() => {
+    onTopMatchChange(matcherComplete ? rankedProgrammes[0] ?? null : null)
+  }, [matcherComplete, onTopMatchChange, rankedProgrammes])
 
   const chooseGrade = (grade: Exclude<Grade, "">) => {
     if (inOtherStep) {
@@ -415,8 +427,13 @@ function GradeMatcher() {
       id="matcher"
       className="py-16"
     >
-      <div className={cn("space-y-8", !matcherComplete && "max-w-3xl")}>
-        <BlurFade className="max-w-2xl" direction="up" inView offset={14}>
+      <div className={cn("space-y-8", !matcherComplete && "mx-auto w-full max-w-5xl")}>
+        <BlurFade
+          className={cn("max-w-2xl", !matcherComplete && "mx-auto text-center")}
+          direction="up"
+          inView
+          offset={14}
+        >
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-[#f26a1b]">
             Matcher
           </p>
@@ -433,7 +450,7 @@ function GradeMatcher() {
           className={cn(
             matcherComplete
               ? "bg-transparent p-0"
-              : "rounded-[2rem] border border-[#eee7df] bg-white p-5 shadow-[0_18px_50px_rgba(37,30,24,0.045)] sm:p-6"
+              : "rounded-[2rem] border border-[#eee7df] bg-white p-5 shadow-[0_18px_50px_rgba(37,30,24,0.045)] sm:p-8"
           )}
           direction="up"
           inView
@@ -461,51 +478,58 @@ function GradeMatcher() {
           {matcherComplete ? (
             <BlurFade key="matcher-complete" direction="left" offset={16} duration={0.35}>
               <div className="space-y-5">
-                <Card className="rounded-[2rem] border-0 bg-[#fff7ed] py-6 text-[#17120f] shadow-none ring-0">
-                  <CardHeader>
-                    <CardDescription className="font-semibold text-[#a14300]">
-                      Estimated APS
-                    </CardDescription>
-                    <CardTitle className="flex flex-wrap items-end gap-3 text-6xl font-semibold tracking-[-0.05em] text-[#17120f]">
-                      <NumberTicker
-                        value={aps}
-                        className="tracking-normal text-[#17120f]"
-                      />
-                      <span className="pb-2 text-base font-medium tracking-normal text-[#8a4b12]">
-                        points
-                      </span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-3 sm:grid-cols-3">
-                      {[
-                        [
-                          rankedProgrammes.filter(
-                            (item) => item.evaluation.status === "Likely"
-                          ).length,
-                          "likely",
-                        ],
-                        [
-                          rankedProgrammes.filter(
-                            (item) => item.evaluation.status === "Close"
-                          ).length,
-                          "close",
-                        ],
-                        [programmes.length, "paths"],
-                      ].map(([value, label]) => (
-                        <div
-                          key={label}
-                          className="rounded-2xl bg-white p-3 text-center"
-                        >
-                          <NumberTicker
-                            value={Number(value)}
-                            className="text-xl font-semibold tracking-normal text-[#17120f]"
-                          />
-                          <div className="mt-1 text-xs font-medium text-[#8a4b12]">
-                            {label}
+                <Card className="rounded-[2rem] border-0 bg-[#fff7ed] py-0 text-[#17120f] shadow-none ring-0">
+                  <CardContent className="grid gap-6 p-5 sm:p-6 lg:grid-cols-[260px_1fr] lg:items-center">
+                    <div className="rounded-[1.75rem] bg-white p-6 text-center">
+                      <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#a14300]">
+                        Estimated APS
+                      </p>
+                      <div className="mt-3 flex items-end justify-center gap-2">
+                        <NumberTicker
+                          value={aps}
+                          className="text-7xl font-semibold tracking-[-0.06em] text-[#17120f]"
+                        />
+                        <span className="pb-3 text-sm font-semibold text-[#8a4b12]">
+                          pts
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-3xl font-semibold tracking-[-0.04em] text-[#17120f]">
+                        Here is the shape of your options.
+                      </h3>
+                      <p className="mt-3 max-w-2xl text-sm leading-6 text-[#6b625c]">
+                        This estimate uses your best six symbols. It is a guide
+                        for narrowing options, not a replacement for official
+                        admissions requirements.
+                      </p>
+                      <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                        {[
+                          [
+                            rankedProgrammes.filter(
+                              (item) => item.evaluation.status === "Likely"
+                            ).length,
+                            "likely",
+                          ],
+                          [
+                            rankedProgrammes.filter(
+                              (item) => item.evaluation.status === "Close"
+                            ).length,
+                            "close",
+                          ],
+                          [programmes.length, "paths"],
+                        ].map(([value, label]) => (
+                          <div key={label} className="rounded-2xl bg-white px-4 py-3">
+                            <NumberTicker
+                              value={Number(value)}
+                              className="text-2xl font-semibold tracking-normal text-[#17120f]"
+                            />
+                            <div className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-[#8a4b12]">
+                              {label}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -615,19 +639,19 @@ function GradeMatcher() {
             </BlurFade>
           ) : inOtherStep ? (
             <BlurFade key="other-subjects" direction="left" offset={16} duration={0.35}>
-              <div className="rounded-[1.75rem] bg-[#faf8f5] p-6">
+              <div className="rounded-[1.75rem] bg-[#faf8f5] p-6 text-center sm:p-8">
                 <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#f26a1b]">
                   Optional subjects
                 </p>
                 <h3 className="mt-3 text-4xl font-semibold tracking-[-0.05em] text-[#17120f]">
                   Add another subject?
                 </h3>
-                <p className="mt-3 leading-7 text-[#6b625c]">
+                <p className="mx-auto mt-3 max-w-xl leading-7 text-[#6b625c]">
                   Search for an extra subject you took. If it is not listed, you
                   can skip straight to the APS score.
                 </p>
 
-                <div className="relative mt-6">
+                <div className="relative mx-auto mt-6 max-w-2xl">
                   <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-[#9d928a]" />
                   <Input
                     value={otherQuery}
@@ -642,7 +666,7 @@ function GradeMatcher() {
 
                 {otherQuery.trim() ? (
                   searchedOtherSubjects.length > 0 ? (
-                    <div className="mt-4 flex flex-wrap gap-2">
+                    <div className="mt-4 flex flex-wrap justify-center gap-2">
                       {searchedOtherSubjects.map((subject) => (
                         <button
                           key={subject}
@@ -660,7 +684,7 @@ function GradeMatcher() {
                       ))}
                     </div>
                   ) : (
-                    <div className="mt-4 rounded-3xl bg-white p-4">
+                    <div className="mx-auto mt-4 max-w-xl rounded-3xl bg-white p-4">
                       <p className="text-sm font-medium text-[#6b625c]">
                         That subject is not in this version of Leseli yet.
                       </p>
@@ -676,7 +700,7 @@ function GradeMatcher() {
                 ) : null}
 
                 {otherSubject ? (
-                  <div className="mt-7 rounded-3xl bg-white p-4">
+                  <div className="mx-auto mt-7 max-w-3xl rounded-3xl bg-white p-4">
                     <p className="text-sm font-semibold text-[#221a15]">
                       {otherSubject}
                     </p>
@@ -693,7 +717,7 @@ function GradeMatcher() {
                   </div>
                 ) : null}
 
-                <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row sm:items-center">
                   <Button
                     type="button"
                     variant="secondary"
@@ -719,7 +743,7 @@ function GradeMatcher() {
               offset={16}
               duration={0.35}
             >
-              <div className="rounded-[1.75rem] bg-[#faf8f5] p-6">
+              <div className="rounded-[1.75rem] bg-[#faf8f5] p-6 text-center sm:p-10">
                 <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#f26a1b]">
                   Core subject
                 </p>
@@ -730,7 +754,7 @@ function GradeMatcher() {
                   What symbol did you get for this subject?
                 </p>
 
-                <div className="mt-7 grid grid-cols-3 gap-3 sm:grid-cols-6">
+                <div className="mx-auto mt-8 grid max-w-3xl grid-cols-3 gap-3 sm:grid-cols-6">
                   {gradeOptions.map((grade) => (
                     <GradeButton
                       key={grade}
@@ -741,8 +765,8 @@ function GradeMatcher() {
                   ))}
                 </div>
 
-                <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex flex-wrap gap-2">
+                <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                  <div className="flex flex-wrap justify-center gap-2">
                     <Button
                       type="button"
                       variant="secondary"
@@ -972,7 +996,95 @@ function FloatingNav() {
   )
 }
 
+function ApplySection({ topMatch }: { topMatch: ProgrammeMatch | null }) {
+  const checklist = topMatch
+    ? [
+        [
+          "Verify the entry rule",
+          [
+            topMatch.aps ? `APS ${topMatch.aps}+` : "Confirm the APS rule",
+            ...topMatch.requirements.map(minGradeLabel),
+          ].join(" · "),
+        ],
+        [
+          "Compare the real fit",
+          `Check fees, campus, accommodation, and support at ${topMatch.institution}.`,
+        ],
+        [
+          "Prepare the application",
+          "Gather your results slip, ID copy, application fee proof, and any programme forms.",
+        ],
+      ]
+    : [
+        [
+          "Run the matcher",
+          "Enter your symbols first so Leseli can turn this into a programme-specific checklist.",
+        ],
+        [
+          "Compare the top options",
+          "Once results appear, look beyond eligibility: fees, location, support, and duration matter.",
+        ],
+        [
+          "Prepare the essentials",
+          "Keep your results slip, ID copy, payment proof, and application forms close.",
+        ],
+      ]
+
+  return (
+    <Card className="rounded-[2rem] border-0 bg-[#faf8f5] py-7 shadow-none ring-0">
+      <CardHeader>
+        {topMatch ? (
+          <div className="mb-2 rounded-3xl bg-white p-5">
+            <Badge
+              variant="secondary"
+              className={cn(
+                "mb-4 h-6 rounded-full px-3 font-semibold",
+                statusStyles(topMatch.evaluation.status)
+              )}
+            >
+              Top match
+            </Badge>
+            <CardTitle className="text-2xl font-semibold tracking-[-0.03em] text-[#17120f]">
+              Before you apply to {topMatch.title}
+            </CardTitle>
+            <CardDescription className="mt-2 text-base leading-7 text-[#6b625c]">
+              {topMatch.institution} · {topMatch.duration}
+            </CardDescription>
+          </div>
+        ) : (
+          <>
+            <CardTitle className="text-2xl font-semibold tracking-[-0.03em] text-[#17120f]">
+              Your next steps will appear here.
+            </CardTitle>
+            <CardDescription className="text-base leading-7 text-[#6b625c]">
+              Finish the matcher and Leseli will turn the top result into a
+              focused apply checklist.
+            </CardDescription>
+          </>
+        )}
+      </CardHeader>
+      <CardContent>
+        <div className="grid gap-3">
+          {checklist.map(([title, body], index) => (
+            <div key={title} className="flex gap-4 rounded-3xl bg-white p-4">
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#fff1dc] text-sm font-semibold text-[#c24f00]">
+                {index + 1}
+              </div>
+              <div>
+                <p className="font-semibold text-[#221a15]">{title}</p>
+                <p className="mt-1 text-sm leading-6 text-[#6b625c]">{body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
 export function LeseliApp() {
+  const [topMatch, setTopMatch] = useState<ProgrammeMatch | null>(null)
+
   return (
     <main className="min-h-screen bg-white text-[#17120f]">
       <FloatingNav />
@@ -1007,22 +1119,6 @@ export function LeseliApp() {
                 Browse institutions
               </Button>
             </div>
-            <div className="grid max-w-xl grid-cols-3 gap-6 pt-6">
-              {[
-                ["10", "institutions"],
-                ["8", "pathways"],
-                ["6", "APS grades"],
-              ].map(([value, label]) => (
-                <div key={label}>
-                  <div className="text-3xl font-semibold tracking-[-0.04em]">
-                    {value}
-                  </div>
-                  <div className="mt-1 text-sm font-medium text-[#8a7f76]">
-                    {label}
-                  </div>
-                </div>
-              ))}
-            </div>
           </BlurFade>
 
           <BlurFade
@@ -1047,7 +1143,7 @@ export function LeseliApp() {
           </BlurFade>
         </section>
 
-        <GradeMatcher />
+        <GradeMatcher onTopMatchChange={setTopMatch} />
 
         <section id="institutions" className="py-16">
           <BlurFade
@@ -1118,65 +1214,67 @@ export function LeseliApp() {
           </BlurFade>
 
           <BlurFade direction="left" inView offset={18}>
-            <Card className="rounded-[2rem] border border-[#eee7df] bg-white py-7 shadow-[0_20px_60px_rgba(37,30,24,0.055)] ring-0">
-              <CardHeader>
-                <CardTitle className="text-2xl font-semibold tracking-[-0.03em] text-[#17120f]">
-                  From match to application.
-                </CardTitle>
-                <CardDescription className="text-base leading-7 text-[#6b625c]">
-                  The useful flow is linear: confirm the requirement, compare
-                  the real-life fit, then prepare the application pack.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-3">
-                  {[
-                    [
-                      "Verify",
-                      "Check APS, subject minimums, campus, and closing date.",
-                    ],
-                    [
-                      "Compare",
-                      "Look at fees, distance, accommodation, and support.",
-                    ],
-                    [
-                      "Apply",
-                      "Gather results, ID copy, proof of payment, and forms.",
-                    ],
-                  ].map(([title, body], index) => (
-                    <div
-                      key={title}
-                      className="flex gap-4 rounded-3xl bg-[#faf8f5] p-4"
-                    >
-                      <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#fff1dc] text-sm font-semibold text-[#c24f00]">
-                        {index + 1}
-                      </div>
-                      <div>
-                        <p className="font-semibold text-[#221a15]">{title}</p>
-                        <p className="mt-1 text-sm leading-6 text-[#6b625c]">
-                          {body}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <ApplySection topMatch={topMatch} />
           </BlurFade>
         </section>
 
-        <footer className="flex flex-col gap-3 py-10 text-sm font-medium text-[#8a7f76] sm:flex-row sm:items-center sm:justify-between">
-          <p>Leseli. Study choices, made clearer.</p>
-          <div className="flex gap-5">
-            <a className="hover:text-[#17120f]" href="#matcher">
-              Matcher
-            </a>
-            <a className="hover:text-[#17120f]" href="#institutions">
-              Institutions
-            </a>
-            <a className="hover:text-[#17120f]" href="#resources">
-              Apply
-            </a>
+        <footer className="border-t border-[#f0ebe5] py-12">
+          <div className="grid gap-10 text-sm md:grid-cols-[1.2fr_repeat(3,1fr)]">
+            <div>
+              <p className="text-lg font-semibold tracking-[-0.03em] text-[#17120f]">
+                leseli logo
+              </p>
+              <p className="mt-3 max-w-xs leading-6 text-[#8a7f76]">
+                Study choices, made clearer for students comparing options in
+                Lesotho.
+              </p>
+            </div>
+            {[
+              [
+                "Product",
+                [
+                  ["Matcher", "#matcher"],
+                  ["Institutions", "#institutions"],
+                  ["Apply checklist", "#resources"],
+                ],
+              ],
+              [
+                "Support",
+                [
+                  ["Contact", "mailto:hello@leseli.app"],
+                  ["Help centre", "#"],
+                  ["Feedback", "mailto:hello@leseli.app"],
+                ],
+              ],
+              [
+                "Legal",
+                [
+                  ["Privacy policy", "#"],
+                  ["Terms", "#"],
+                  ["Accessibility", "#"],
+                  ["Data policy", "#"],
+                ],
+              ],
+            ].map(([title, links]) => (
+              <div key={title as string}>
+                <p className="font-semibold text-[#17120f]">{title as string}</p>
+                <div className="mt-4 flex flex-col gap-3 text-[#8a7f76]">
+                  {(links as string[][]).map(([label, href]) => (
+                    <a
+                      key={label}
+                      className="transition hover:text-[#17120f]"
+                      href={href}
+                    >
+                      {label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-10 flex flex-col gap-3 text-xs font-medium text-[#9d928a] sm:flex-row sm:items-center sm:justify-between">
+            <p>© 2026 Leseli. All rights reserved.</p>
+            <p>Guidance only. Always confirm official entry requirements.</p>
           </div>
         </footer>
       </div>
