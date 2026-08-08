@@ -3,6 +3,7 @@
 import { useState } from "react"
 
 import { ApplySectionBlock } from "@/components/leseli/apply-section-block"
+import { FloatingChatBar } from "@/components/leseli/floating-chat-bar"
 import { FloatingNav } from "@/components/leseli/floating-nav"
 import { GradeMatcher } from "@/components/leseli/grade-matcher"
 import { HeroSection } from "@/components/leseli/hero-section"
@@ -16,6 +17,7 @@ export function LeseliApp() {
   return (
     <main className="min-h-screen bg-white text-[#17120f]">
       <FloatingNav />
+      <FloatingChatBar />
 
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
         <HeroSection />
